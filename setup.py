@@ -4,18 +4,22 @@ from distutils.core import setup
 version='1.3.4'
 
 setup(
-    name='vkontakte',
+    name='vkontakte_viomg',
     version=version,
-    author='Mikhail Korobov, Serhii Maltsev',
+    author='Mikhail Korobov, Serhii Maltsev, Eugeny Yablochkin',
     author_email='kmike84@gmail.com, alternativshik@gmail.com',
 
-    packages=['vkontakte'],
+    packages=['vkontakte_viomg'],
+    install_requires=[
+        'gevent==1.0.1',
+        'redis==2.10.3'
+    ],
 
     url='http://bitbucket.org/kmike/vkontakte/',
-    license = 'MIT license',
-    description = "vk.com (aka vkontakte.ru) API wrapper",
+    license='MIT license',
+    description="vk.com (aka vkontakte.ru) API wrapper",
 
-    long_description = open('README.rst').read() + open('CHANGES.rst').read(),
+    long_description=open('README.rst').read() + open('CHANGES.rst').read(),
 
     classifiers=[
         'Development Status :: 4 - Beta',

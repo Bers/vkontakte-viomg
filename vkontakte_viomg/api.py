@@ -9,7 +9,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-from vkontakte import http
+from vkontakte_viomg import http
 
 API_URL = 'http://api.vk.com/api.php'
 SECURE_API_URL = 'https://api.vk.com/method/'
@@ -98,7 +98,7 @@ def signature(api_secret, params):
 # It works this way: API class has 'get' method but _API class doesn't.
 
 class _API(object):
-    def __init__(self, api_id=None, api_secret=None, token=None, **defaults):
+    def __init__(self, api_id=None, api_secret=None, token=None, ratelimit=3, **defaults):
 
         if not (api_id and api_secret or token):
             raise ValueError("Arguments api_id and api_secret or token are required")
@@ -106,6 +106,7 @@ class _API(object):
         self.api_id = api_id
         self.api_secret = api_secret
         self.token = token
+        self.ratelimit = 3  # rps to api
         self.defaults = defaults
         self.method_prefix = ''
 
@@ -186,7 +187,7 @@ class _API(object):
 
         # urllib2 doesn't support timeouts for python 2.5 so
         # custom function is used for making http requests
-        return http.post(url, data, headers, timeout, secure=secure)
+        return http.post(url, data, headers, timeout, self.api_id, self.ratelimit, secure=secure)
 
 
 class API(_API):
