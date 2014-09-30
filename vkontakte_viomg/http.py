@@ -68,7 +68,7 @@ def post(url, data, headers, timeout, api_id, ratelimit, secure=False):
                 else:
                     gevent.sleep(interval - delay)
 
-            print time.time() - get_last_call_time(api_id)
+            #print time.time() - get_last_call_time(api_id)
 
             set_last_call_time(api_id)
             gr = gevent.spawn(do, connection, url, data, headers)
