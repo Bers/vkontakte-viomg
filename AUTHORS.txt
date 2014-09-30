@@ -7,3 +7,4 @@ Authors
 * Alex Kamedov (http://kamedov.ru)
 * Pyotr Yermishkin <quasiyoke@gmail.com>
 * Valentin Gorbunov <valuerr@gmail.com>
+* Eugeny Yablochkin <bers.com@gmail.com>
