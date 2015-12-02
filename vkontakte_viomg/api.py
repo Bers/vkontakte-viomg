@@ -1,15 +1,18 @@
-# coding: utf-8
-import random
-import time
-import urllib
-import warnings
+# -*- coding: utf-8 -*-
+from gevent import monkey
+monkey.patch_all(thread=False)
+
 from hashlib import md5
 from functools import partial
-try:
-    import simplejson as json
-except ImportError:
-    import json
+
 from vkontakte_viomg import http
+
+import warnings
+import urllib
+import random
+import time
+import json
+
 
 API_URL = 'http://api.vk.com/api.php'
 SECURE_API_URL = 'https://api.vk.com/method/'
