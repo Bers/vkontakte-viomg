@@ -42,7 +42,7 @@ def post(url, data, headers, timeout, api_id, ratelimit, secure=False):
 
     interval = 1.0 / ratelimit
 
-    with Lock(API_LOCK_KEY % api_id, expires=180, timeout=300):
+    with Lock(API_LOCK_KEY % api_id, expires=2):
 
         while 1:
             delay = time.time() - get_last_call_time(api_id)
