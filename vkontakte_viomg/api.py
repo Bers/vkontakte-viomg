@@ -107,7 +107,8 @@ def signature(api_secret, params):
 
 
 class _API(object):
-    def __init__(self, api_id=None, api_secret=None, token=None, ratelimit=3, lock_timeout=30, lock_expires=2, **defaults):
+
+    def __init__(self, api_id=None, api_secret=None, token=None, ratelimit=3, lock_timeout=60, lock_expires=2, **defaults):
 
         if not (api_id and api_secret or token):
             raise ValueError("Arguments api_id and api_secret or token are required")
