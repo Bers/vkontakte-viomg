@@ -23,15 +23,18 @@ REQUEST_ENCODING = 'utf8'
 # See full list of VK API methods here:
 # http://vk.com/developers.php?o=-1&p=%D0%A0%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5_%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D1%8B_API&s=0
 # http://vk.com/developers.php?o=-1&p=%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D0%BE%D0%B2_API&s=0
-COMPLEX_METHODS = ['secure', 'ads', 'messages', 'likes', 'friends',
+COMPLEX_METHODS = [
+    'secure', 'ads', 'messages', 'likes', 'friends',
     'groups', 'photos', 'wall', 'board', 'newsfeed', 'notifications', 'audio',
     'video', 'docs', 'places', 'storage', 'notes', 'pages',
     'activity', 'offers', 'questions', 'subscriptions', 'database',
-    'users', 'status', 'polls', 'account', 'auth', 'stats']
+    'users', 'status', 'polls', 'account', 'auth', 'stats'
+]
 
 
 class VKError(Exception):
     __slots__ = ["error"]
+
     def __init__(self, error_data):
         self.error = error_data
         Exception.__init__(self, str(self))
@@ -51,7 +54,7 @@ class VKError(Exception):
     @property
     def captcha(self):
         data = None
-        if self.code == 14: # Capcha needed error
+        if self.code == 14:  # Capcha needed error
             data = {
                 'sid': self.error['captcha_sid'],
                 'img': self.error['captcha_img'],
@@ -61,10 +64,9 @@ class VKError(Exception):
     @property
     def redirect_uri(self):
         data = None
-        if self.code == 17: # Validation required
+        if self.code == 17:  # Validation required
             data = self.error['redirect_uri']
         return data
-
 
     def __str__(self):
         return "Error(code = '%s', description = '%s', params = '%s', captcha = '%s', redirect_uri = '%s')" % (self.code, self.description, self.params, self.captcha, self.redirect_uri)
@@ -77,7 +79,8 @@ def _encode(s):
     if isinstance(s, unicode):
         s = s.encode(REQUEST_ENCODING)
 
-    return s # this can be number, etc.
+    return s  # this can be number, etc.
+
 
 def _json_iterparse(response):
     response = response.strip()
@@ -87,10 +90,12 @@ def _json_iterparse(response):
         obj, idx = decoder.raw_decode(response, idx)
         yield obj
 
+
 def signature(api_secret, params):
     keys = sorted(params.keys())
     param_str = "".join(["%s=%s" % (str(key), _encode(params[key])) for key in keys])
     return md5(param_str + str(api_secret)).hexdigest()
+
 
 # We have to support this:
 #
@@ -100,8 +105,9 @@ def signature(api_secret, params):
 #
 # It works this way: API class has 'get' method but _API class doesn't.
 
+
 class _API(object):
-    def __init__(self, api_id=None, api_secret=None, token=None, ratelimit=3, **defaults):
+    def __init__(self, api_id=None, api_secret=None, token=None, ratelimit=3, lock_timeout=30, lock_expires=2, **defaults):
 
         if not (api_id and api_secret or token):
             raise ValueError("Arguments api_id and api_secret or token are required")
@@ -109,7 +115,12 @@ class _API(object):
         self.api_id = api_id
         self.api_secret = api_secret
         self.token = token
-        self.ratelimit = 3  # rps to api
+
+        self.ratelimit = ratelimit
+
+        self.lock_timeout = lock_timeout
+        self.lock_expires = lock_expires
+
         self.defaults = defaults
         self.method_prefix = ''
 
@@ -168,7 +179,6 @@ class _API(object):
             params.update(kwargs)
             params['timestamp'] = int(time.time())
             url = SECURE_API_URL + method
-            secure = True
         else:
             # http://vkontakte.ru/developers.php?oid=-1&p=Взаимодействие_приложения_с_API
             params = dict(
@@ -182,7 +192,6 @@ class _API(object):
             params['timestamp'] = int(time.time())
             params['sig'] = self._signature(params)
             url = API_URL
-            secure = False
         data = urllib.urlencode(params)
 
         headers = {"Accept": "application/json",
@@ -190,7 +199,16 @@ class _API(object):
 
         # urllib2 doesn't support timeouts for python 2.5 so
         # custom function is used for making http requests
-        return http.post(url, data, headers, timeout, self.api_id, self.ratelimit, secure=secure)
+        return http.post(
+            url,
+            data,
+            headers,
+            timeout,
+            self.api_id,
+            self.ratelimit,
+            self.lock_timeout,
+            self.lock_expires
+        )
 
 
 class API(_API):
