@@ -37,7 +37,7 @@ def do(url, data, headers, timeout):
     return code, content
 
 
-def post(url, data, headers, timeout, api_id, ratelimit, lock_timeout=100, lock_expires=2):
+def post(url, data, headers, timeout, api_id, ratelimit, lock_timeout=300, lock_expires=2):
     api_id = api_id or '-'
 
     interval = 1.0 / ratelimit
