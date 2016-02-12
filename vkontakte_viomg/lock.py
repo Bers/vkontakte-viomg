@@ -13,7 +13,7 @@ requires every client to have synchronized time.
 """
 # Copyright 2010,2011 Chris Lamb <lamby@debian.org>
 
-import time
+import gevent
 import uuid
 
 from vkontakte_viomg.utils import global_connection
@@ -86,7 +86,7 @@ class Lock(object):
                 return
             timeout -= 0.1
             if timeout >= 0:
-                time.sleep(0.1)
+                gevent.sleep(0.1)
         raise LockTimeout("Timeout while waiting for lock")
 
     def release(self):
