@@ -151,7 +151,15 @@ class _API(object):
         Support for api.<method>.<methodName> syntax
         '''
         if name in COMPLEX_METHODS:
-            api = _API(api_id=self.api_id, api_secret=self.api_secret, token=self.token, **self.defaults)
+            api = _API(
+                api_id=self.api_id,
+                api_secret=self.api_secret,
+                token=self.token,
+                ratelimit=self.ratelimit,
+                lock_timeout=self.lock_timeout,
+                lock_expires=self.lock_expires,
+                **self.defaults
+            )
             api.method_prefix = name + '.'
             return api
 
