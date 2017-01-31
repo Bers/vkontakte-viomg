@@ -214,9 +214,10 @@ class _API(object):
             headers,
             timeout,
             self.api_id,
+            self.token,
             self.ratelimit,
             self.lock_timeout,
-            self.lock_expires
+            self.lock_expires,
         )
 
 

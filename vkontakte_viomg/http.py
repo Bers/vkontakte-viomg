@@ -13,7 +13,7 @@ import time
 
 
 LAST_CALL_TIME_KEY = 'vk_last_call_time_%s'
-API_LOCK_KEY = 'vk_lock_%s'
+API_LOCK_KEY = 'vk_lock_%s_%s'
 
 
 def get_last_call_time(api_id):
@@ -37,12 +37,12 @@ def do(url, data, headers, timeout):
     return code, content
 
 
-def post(url, data, headers, timeout, api_id, ratelimit, lock_timeout=300, lock_expires=2):
+def post(url, data, headers, timeout, api_id, token, ratelimit, lock_timeout=300, lock_expires=2):
     api_id = api_id or '-'
 
     interval = 1.0 / ratelimit
 
-    with Lock(API_LOCK_KEY % api_id, timeout=lock_timeout, expires=lock_expires):
+    with Lock(API_LOCK_KEY % (api_id, token), timeout=lock_timeout, expires=lock_expires):
 
         while 1:
             delay = time.time() - get_last_call_time(api_id)
