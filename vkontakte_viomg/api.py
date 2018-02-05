@@ -184,6 +184,7 @@ class _API(object):
             # http://vkontakte.ru/developers.php?oid=-1&p=Выполнение_запросов_к_API
             params = dict(
                 access_token=self.token,
+                v='4.0',
             )
             params.update(kwargs)
             params['timestamp'] = int(time.time())
@@ -194,7 +195,7 @@ class _API(object):
                 api_id=str(self.api_id),
                 method=method,
                 format='JSON',
-                v='3.0',
+                v='4.0',
                 random=random.randint(0, 2 ** 30),
             )
             params.update(kwargs)
