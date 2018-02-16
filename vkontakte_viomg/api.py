@@ -17,6 +17,7 @@ import json
 API_URL = 'http://api.vk.com/api.php'
 SECURE_API_URL = 'https://api.vk.com/method/'
 DEFAULT_TIMEOUT = 1
+DEFAULT_API_VERSION = '4.0'
 REQUEST_ENCODING = 'utf8'
 
 
@@ -126,12 +127,15 @@ class _API(object):
         self.method_prefix = ''
 
     def _get(self, method, timeout=DEFAULT_TIMEOUT, **kwargs):
-        status, response = self._request(method, timeout=timeout, **kwargs)
+        params = self.defaults.copy()
+        params.update(kwargs)
+
+        status, response = self._request(method, timeout=timeout, **params)
         if not (200 <= status <= 299):
             raise VKError({
                 'error_code': status,
                 'error_msg': "HTTP error",
-                'request_params': kwargs,
+                'request_params': params,
             })
 
         # there may be a response after errors
@@ -184,7 +188,6 @@ class _API(object):
             # http://vkontakte.ru/developers.php?oid=-1&p=Выполнение_запросов_к_API
             params = dict(
                 access_token=self.token,
-                v='4.0',
             )
             params.update(kwargs)
             params['timestamp'] = int(time.time())
@@ -195,13 +198,16 @@ class _API(object):
                 api_id=str(self.api_id),
                 method=method,
                 format='JSON',
-                v='4.0',
                 random=random.randint(0, 2 ** 30),
             )
             params.update(kwargs)
             params['timestamp'] = int(time.time())
             params['sig'] = self._signature(params)
             url = API_URL
+
+        if 'v' not in params:
+            params['v'] = DEFAULT_API_VERSION
+
         data = urllib.urlencode(params)
 
         headers = {"Accept": "application/json",
