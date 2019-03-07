@@ -11,6 +11,13 @@ from vkontakte_viomg.lock import Lock
 import urllib2
 import time
 
+try:
+    # python3
+    from urllib.request import urlopen, Request
+except ImportError:
+    # Fall back to Python 2's urllib2
+    from urllib2 import urlopen, Request
+
 
 LAST_CALL_TIME_KEY = 'vk_last_call_time_%s'
 API_LOCK_KEY = 'vk_lock_%s_%s'
@@ -30,8 +37,8 @@ def set_last_call_time(api_id):
 
 
 def do(url, data, headers, timeout):
-    req = urllib2.Request(url, data, headers=headers)
-    response = urllib2.urlopen(req, timeout=timeout)
+    req = Request(url, data, headers=headers)
+    response = urlopen(req, timeout=timeout)
     code = response.getcode()
     content = response.read()
     return code, content
