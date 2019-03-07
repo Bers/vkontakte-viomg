@@ -8,7 +8,6 @@ monkey.patch_all(thread=False)
 from vkontakte_viomg.utils import global_connection
 from vkontakte_viomg.lock import Lock
 
-import urllib2
 import time
 
 try:
