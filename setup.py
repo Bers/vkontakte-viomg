@@ -19,7 +19,7 @@ setup(
     license='MIT license',
     description="VK API wrapper",
 
-    # long_description=open('README.rst').read() + open('CHANGES.rst').read(),
+    long_description="VK api",
 
     classifiers=[
         'Development Status :: 4 - Beta',
