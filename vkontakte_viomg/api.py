@@ -138,7 +138,7 @@ class _API(object):
 
         # there may be a response after errors
         errors = []
-        data = json.loads(response)
+        data = json.loads(response.decode('utf-8'))
 
         if "error" in data:
             errors.append(data["error"])
