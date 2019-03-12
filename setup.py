@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from distutils.core import setup
 
-version='1.3.6'
+version='1.3.7'
 
 setup(
     name='vkontakte_viomg',

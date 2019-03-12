@@ -15,6 +15,12 @@ import json
 import six
 
 
+try:
+    from urllib import urlencode
+except:
+    from urllib.parse import urlencode
+
+
 API_URL = 'http://api.vk.com/api.php'
 SECURE_API_URL = 'https://api.vk.com/method/'
 DEFAULT_TIMEOUT = 1
@@ -84,15 +90,6 @@ def _encode(s):
     return s  # this can be number, etc.
 
 
-def _json_iterparse(response):
-    response = response.strip()
-    decoder = json.JSONDecoder(encoding="utf8", strict=False)
-    idx = 0
-    while idx < len(response):
-        obj, idx = decoder.raw_decode(response, idx)
-        yield obj
-
-
 def signature(api_secret, params):
     keys = sorted(params.keys())
     param_str = "".join(["%s=%s" % (str(key), _encode(params[key])) for key in keys])
@@ -141,13 +138,14 @@ class _API(object):
 
         # there may be a response after errors
         errors = []
-        for data in _json_iterparse(response):
-            if "error" in data:
-                errors.append(data["error"])
-            if "response" in data:
-                for error in errors:
-                    warnings.warn("%s" % error)
-                return data["response"]
+        data = json.loads(response)
+
+        if "error" in data:
+            errors.append(data["error"])
+        if "response" in data:
+            for error in errors:
+                warnings.warn("%s" % error)
+            return data["response"]
 
         raise VKError(errors[0])
 
@@ -209,7 +207,7 @@ class _API(object):
         if 'v' not in params:
             params['v'] = DEFAULT_API_VERSION
 
-        data = urllib.urlencode(params)
+        data = urlencode(params).encode('utf-8')
 
         headers = {"Accept": "application/json",
                    "Content-Type": "application/x-www-form-urlencoded"}
