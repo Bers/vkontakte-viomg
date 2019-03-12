@@ -12,7 +12,8 @@ setup(
     packages=['vkontakte_viomg'],
     install_requires=[
         'gevent>=1.0.2',
-        'redis>=2.10.5'
+        'redis>=2.10.5',
+        'six'
     ],
 
     url='http://bitbucket.org/kmike/vkontakte/',

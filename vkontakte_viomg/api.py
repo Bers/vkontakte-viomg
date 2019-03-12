@@ -12,6 +12,7 @@ import urllib
 import random
 import time
 import json
+import six
 
 
 API_URL = 'http://api.vk.com/api.php'
@@ -181,7 +182,7 @@ class _API(object):
 
     def _request(self, method, timeout=DEFAULT_TIMEOUT, **kwargs):
 
-        for key, value in kwargs.iteritems():
+        for key, value in six.iteritems(kwargs):
             kwargs[key] = _encode(value)
 
         if self.token:
