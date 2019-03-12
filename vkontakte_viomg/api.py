@@ -78,7 +78,7 @@ def _encode(s):
     if isinstance(s, (dict, list, tuple)):
         s = json.dumps(s, ensure_ascii=False, encoding=REQUEST_ENCODING)
 
-    if isinstance(s, unicode):
+    if isinstance(s, str):
         s = s.encode(REQUEST_ENCODING)
 
     return s  # this can be number, etc.
