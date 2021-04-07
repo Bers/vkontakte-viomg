@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-from gevent import monkey
-monkey.patch_all(thread=False)
-
 from hashlib import md5
 from functools import partial
 
@@ -24,7 +21,7 @@ except:
 API_URL = 'http://api.vk.com/api.php'
 SECURE_API_URL = 'https://api.vk.com/method/'
 DEFAULT_TIMEOUT = 1
-DEFAULT_API_VERSION = '4.0'
+DEFAULT_API_VERSION = '5.90'
 REQUEST_ENCODING = 'utf8'
 
 

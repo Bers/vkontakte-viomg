@@ -2,8 +2,6 @@
 from __future__ import with_statement
 
 import gevent
-from gevent import monkey
-monkey.patch_all(thread=False)
 
 from vkontakte_viomg.utils import global_connection
 from vkontakte_viomg.lock import Lock
